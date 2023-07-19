@@ -2,6 +2,7 @@ package com.example.conversionofunits
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
@@ -10,6 +11,8 @@ import java.lang.NumberFormatException
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
+    var inputNumber : Int = 0
+    var cmToM = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -22,8 +25,7 @@ class MainActivity : AppCompatActivity() {
         val inputUnitTextView = binding.inputUnitTextView
         val swapImageButton = binding.swapImageButton
 
-        var inputNumber : Int = 0
-        var cmToM = true
+
 
         inputEditText.addTextChangedListener { text ->
             inputNumber = if(text.isNullOrBlank()){
@@ -51,5 +53,18 @@ class MainActivity : AppCompatActivity() {
                 outputTextView.text = inputNumber.times(100).toString()
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        outState.putBoolean("cmToM", cmToM)
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        cmToM = savedInstanceState.getBoolean("cmToM")
+        Log.d("cmToM" , cmToM.toString())
+        binding.inputUnitTextView.text = if(cmToM) "cm" else "m"
+        binding.outputUnitTextView.text = if(cmToM) "m" else "cm"
+        super.onRestoreInstanceState(savedInstanceState)
     }
 }
